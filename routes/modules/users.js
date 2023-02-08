@@ -1,5 +1,5 @@
 const express = require('express')
-const passport = require('../../config/passport')
+const passport = require('passport')
 const User = require('../../models/users')
 const router = express.Router()
 
@@ -39,4 +39,10 @@ router.post('/register', (req, res) => {
   })
     .catch(error => console.log(error))
 })
+
+router.get('/logout', (req, res) => {
+  req.logout()
+  res.redirect('/users/login')
+})
+
 module.exports = router
