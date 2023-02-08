@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const users = require("./users")
 const Schema = mongoose.Schema
 
 const restaurantSchema = new Schema({
@@ -11,6 +12,7 @@ const restaurantSchema = new Schema({
   google_map: { type: String, required: true },
   rating: { type: Number, required: true },
   description: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: users, index: true, required: true }
 })
 
 module.exports = mongoose.model("Restaurant", restaurantSchema)
