@@ -10,12 +10,12 @@ const { use } = require("passport")
 require('./config/mongoose')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }))
 app.set("view engine", "handlebars")
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
