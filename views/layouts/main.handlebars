@@ -24,6 +24,11 @@
             width="30" height="30" class="d-inline-block align-top" alt="我的餐廳清單" />
           {{#if isAuthenticated}}{{ user.name }}的{{/if}}餐廳清單
         </a>
+        {{#if isAuthenticated}}
+        <a href="/users/logout" class="btn btn-outline-secondary">Logout</a>
+        {{else}}
+        <a href="/users/login" class="btn btn-outline-secondary">Login</a>
+        {{/if}}
       </div>
     </nav>
 

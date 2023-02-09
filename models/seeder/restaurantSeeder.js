@@ -1,18 +1,56 @@
+const bcrypt = require('bcryptjs');
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-} 
-const db = require('../../config/mongoose')
-const Restaurant = require("../Restaurant")
-const restaurantList = require("../../restaurant.json").results
+  require('dotenv').config();
+}
 
+const User = require('../users');
+const Restaurant = require('../restaurant');
+const restaurantData = require('../../restaurant.json').results;
+const db = require('../../config/mongoose');
+const SEED_USERS = [
+  {
+    name: 'user1',
+    email: 'user1@example.com',
+    password: '12345678',
+    restaurantIndex: [0, 1, 2],
+  },
+  {
+    name: 'user2',
+    email: 'user2@example.com',
+    password: '12345678',
+    restaurantIndex: [3, 4, 5],
+  },
+];
 
-db.once("open", () => {
-  console.log("running restaurantSeeder script...")
+db.once('open', () => {
+  return Promise.all(
+    SEED_USERS.map((user) => {
+      const { restaurantIndex } = user;
 
-  Restaurant.create(restaurantList)
-    .then(() => {
-      console.log("restaurantSeeder done!")
-      db.close()
+      return bcrypt
+        .genSalt(10)
+        .then((salt) => bcrypt.hash(user.password, salt))
+        .then((hash) =>
+          User.create({
+            name: user.name,
+            email: user.email,
+            password: hash,
+          })
+        )
+        .then((user) => {
+          const restaurants = restaurantIndex.map((index) => {
+            const restaurant = restaurantData[index];
+            restaurant.userId = user._id;
+            return restaurant;
+          });
+          return Restaurant.create(restaurants);
+        })
+        .catch((error) => console.log(error));
     })
-    .catch(err => console.log(err))
-})
+  )
+    .then(() => {
+      console.log('done');
+      process.exit();
+    })
+    .catch((error) => console.log(error));
+});

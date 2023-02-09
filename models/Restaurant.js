@@ -1,5 +1,5 @@
-const mongoose = require("mongoose")
-const users = require("./users")
+const mongoose = require('mongoose')
+const users = require('./users')
 const Schema = mongoose.Schema
 
 const restaurantSchema = new Schema({
@@ -15,4 +15,4 @@ const restaurantSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: users, index: true, required: true }
 })
 
-module.exports = mongoose.model("Restaurant", restaurantSchema)
+module.exports = mongoose.model('Restaurant', restaurantSchema)
