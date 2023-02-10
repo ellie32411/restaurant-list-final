@@ -21,7 +21,7 @@ router.get('/register', (req, res) => {
 router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
   const errors = []
-  if (!email || !password ||!confirmPassword) {
+  if (!email || !password || !confirmPassword) {
     errors.push({ message: 'Email或是密碼未填寫完整。' })
   }
   if (password !== confirmPassword) {
@@ -48,15 +48,15 @@ router.post('/register', (req, res) => {
       })
     } else {
       return bcrypt
-            .genSalt(10)
-            .then(salt => bcrypt.hash(password, salt))
-            .then(hash => User.create({
-              name,
-              email,
-              password: hash
-            })
-              .then(() => res.redirect('/'))
-              .catch(error => console.log(error)))
+        .genSalt(10)
+        .then(salt => bcrypt.hash(password, salt))
+        .then(hash => User.create({
+          name,
+          email,
+          password: hash
+        })
+          .then(() => res.redirect('/'))
+          .catch(error => console.log(error)))
     }
   })
     .catch(error => console.log(error))

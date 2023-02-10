@@ -13,18 +13,18 @@ module.exports = app => {
 
   passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({ email })
-    .then(user => {
-      if (!user) {
-        return done(null, false, { type: 'warning_msg', message: '這個Email沒有註冊過。'})
-      }
-      return bcrypt.compare(password, user.password).then(isMatch => {
-        if (!isMatch) {
-          return done(null, false, { type: 'warning_msg', message: 'Email或是密碼不正確。' })
+      .then(user => {
+        if (!user) {
+          return done(null, false, { type: 'warning_msg', message: '這個Email沒有註冊過。' })
         }
-        return done(null, user)
+        return bcrypt.compare(password, user.password).then(isMatch => {
+          if (!isMatch) {
+            return done(null, false, { type: 'warning_msg', message: 'Email或是密碼不正確。' })
+          }
+          return done(null, user)
+        })
       })
-    })
-    .catch(error => console.log(error))
+      .catch(error => console.log(error))
   }))
 
   passport.use(new FacebookStrategy({
@@ -39,17 +39,17 @@ module.exports = app => {
         if (user) return done(null, user)
         const randomPassword = Math.random().toString(36).slice(-8)
         bcrypt
-        .genSalt(10)
-        .then(salt => bcrypt.hash(randomPassword, salt))
-        .then(hash => User.create({
-          name,
-          email,
-          password: hash
-        }))
-        .then(user => done(null, user))
-        .catch(error => done(error, false))
+          .genSalt(10)
+          .then(salt => bcrypt.hash(randomPassword, salt))
+          .then(hash => User.create({
+            name,
+            email,
+            password: hash
+          }))
+          .then(user => done(null, user))
+          .catch(error => done(error, false))
       })
-    }
+  }
   ))
 
   passport.serializeUser((user, done) => {
@@ -57,8 +57,8 @@ module.exports = app => {
   })
   passport.deserializeUser((id, done) => {
     User.findById(id)
-        .lean()
-        .then(user => done(null, user))
-        .catch(error => done(error, null))
+      .lean()
+      .then(user => done(null, user))
+      .catch(error => done(error, null))
   })
 }

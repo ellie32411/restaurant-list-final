@@ -1,31 +1,31 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs')
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+  require('dotenv').config()
 }
 
-const User = require('../users');
-const Restaurant = require('../restaurant');
-const restaurantData = require('../../restaurant.json').results;
-const db = require('../../config/mongoose');
+const User = require('../users')
+const Restaurant = require('../restaurant')
+const restaurantData = require('../../restaurant.json').results
+const db = require('../../config/mongoose')
 const SEED_USERS = [
   {
     name: 'user1',
     email: 'user1@example.com',
     password: '12345678',
-    restaurantIndex: [0, 1, 2],
+    restaurantIndex: [0, 1, 2]
   },
   {
     name: 'user2',
     email: 'user2@example.com',
     password: '12345678',
-    restaurantIndex: [3, 4, 5],
-  },
-];
+    restaurantIndex: [3, 4, 5]
+  }
+]
 
 db.once('open', () => {
   return Promise.all(
     SEED_USERS.map((user) => {
-      const { restaurantIndex } = user;
+      const { restaurantIndex } = user
 
       return bcrypt
         .genSalt(10)
@@ -34,23 +34,23 @@ db.once('open', () => {
           User.create({
             name: user.name,
             email: user.email,
-            password: hash,
+            password: hash
           })
         )
         .then((user) => {
           const restaurants = restaurantIndex.map((index) => {
-            const restaurant = restaurantData[index];
-            restaurant.userId = user._id;
-            return restaurant;
-          });
-          return Restaurant.create(restaurants);
+            const restaurant = restaurantData[index]
+            restaurant.userId = user._id
+            return restaurant
+          })
+          return Restaurant.create(restaurants)
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
     })
   )
     .then(() => {
-      console.log('done');
-      process.exit();
+      console.log('done')
+      process.exit()
     })
-    .catch((error) => console.log(error));
-});
+    .catch((error) => console.log(error))
+})
